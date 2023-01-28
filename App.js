@@ -1,20 +1,64 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, Image, Button, TouchableOpacity} from 'react-native';
+import ImagePicker from 'react-native-image-picker';
+import FishClassification from './lib/FishClassification';
 
-export default function App() {
+const FishIdentification = () => {
+  const [image, setImage] = useState(null);
+  const [result, setResult] = useState(null);
+
+  const pickImage = () => {
+    const options = {
+      title: 'Select Fish Image',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+    ImagePicker.showImagePicker(options, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        setImage(response.uri);
+      }
+    });
+  };
+
+  const identifyFish = async () => {
+    if (!image) {
+      console.log('Please select an image.');
+      return;
+    }
+
+    const fishClassification = new FishClassification();
+    await fishClassification.loadModel();
+    const result = await fishClassification.classifyImage(image);
+    setResult(result);
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View>
+      <View>
+        {image && <Image source={{uri: image}} style={{width: '100%', height: 200}} />}
+        <TouchableOpacity onPress={pickImage}>
+          <Text>Select or Take Photo</Text>
+        </TouchableOpacity>
+      </View>
+      <View>
+        <Button title="Identify Fish" onPress={identifyFish} />
+      </View>
+      {result && (
+        <View>
+          <Text>Fish Name: {result.name}</Text>
+          <Text>Fish Family: {result.family}</Text>
+        </View>
+      )}
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default FishIdentification;

@@ -1,0 +1,5 @@
+{
+    "conventionalCommits.scopes": [
+        "to runn the project make sure to install nvm on your local machine to avoid node version issues since node version 18 is now  working with  expo new version"
+    ]
+}
