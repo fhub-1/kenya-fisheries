@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import {View, Text, Image, Button, TouchableOpacity} from 'react-native';
+import {View, Text, Image, Button, TouchableOpacity,SafeAreaView} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
-import FishClassification from './lib/FishClassification';
+ import FishClassification from './lib/FishClassification';
 
 const FishIdentification = () => {
   const [image, setImage] = useState(null);
@@ -41,7 +41,7 @@ const FishIdentification = () => {
   };
 
   return (
-    <View>
+    <SafeAreaView>
       <View>
         {image && <Image source={{uri: image}} style={{width: '100%', height: 200}} />}
         <TouchableOpacity onPress={pickImage}>
@@ -57,7 +57,7 @@ const FishIdentification = () => {
           <Text>Fish Family: {result.family}</Text>
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
